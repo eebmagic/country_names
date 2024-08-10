@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "an", "label": "an", "shape": "dot"}, {"color": "#97c2fc", "id": "aa", "label": "aa", "shape": "dot"}, {"color": "#97c2fc", "id": "bs", "label": "bs", "shape": "dot"}, {"color": "#97c2fc", "id": "bn", "label": "bn", "shape": "dot"}, {"color": "#97c2fc", "id": "bh", "label": "bh", "shape": "dot"}, {"color": "#97c2fc", "id": "bm", "label": "bm", "shape": "dot"}, {"color": "#97c2fc", "id": "be", "label": "be", "shape": "dot"}, {"color": "#97c2fc", "id": "ba", "label": "ba", "shape": "dot"}, {"color": "#97c2fc", "id": "bl", "label": "bl", "shape": "dot"}, {"color": "#97c2fc", "id": "bi", "label": "bi", "shape": "dot"}, {"color": "#97c2fc", "id": "bo", "label": "bo", "shape": "dot"}, {"color": "#97c2fc", "id": "ce", "label": "ce", "shape": "dot"}, {"color": "#97c2fc", "id": "ca", "label": "ca", "shape": "dot"}, {"color": "#97c2fc", "id": "cn", "label": "cn", "shape": "dot"}, {"color": "#97c2fc", "id": "cc", "label": "cc", "shape": "dot"}, {"color": "#97c2fc", "id": "cd", "label": "cd", "shape": "dot"}, {"color": "#97c2fc", "id": "cs", "label": "cs", "shape": "dot"}, {"color": "#97c2fc", "id": "co", "label": "co", "shape": "dot"}, {"color": "#97c2fc", "id": "do", "label": "do", "shape": "dot"}, {"color": "#97c2fc", "id": "dk", "label": "dk", "shape": "dot"}, {"color": "#97c2fc", "id": "di", "label": "di", "shape": "dot"}, {"color": "#97c2fc", "id": "da", "label": "da", "shape": "dot"}, {"color": "#97c2fc", "id": "dc", "label": "dc", "shape": "dot"}, {"color": "#97c2fc", "id": "er", "label": "er", "shape": "dot"}, {"color": "#97c2fc", "id": "et", "label": "et", "shape": "dot"}, {"color": "#97c2fc", "id": "ea", "label": "ea", "shape": "dot"}, {"color": "#97c2fc", "id": "ei", "label": "ei", "shape": "dot"}, {"color": "#97c2fc", "id": "fi", "label": "fi", "shape": "dot"}, {"color": "#97c2fc", "id": "fd", "label": "fd", "shape": "dot"}, {"color": "#97c2fc", "id": "fe", "label": "fe", "shape": "dot"}, {"color": "#97c2fc", "id": "gn", "label": "gn", "shape": "dot"}, {"color": "#97c2fc", "id": "ga", "label": "ga", "shape": "dot"}, {"color": "#97c2fc", "id": "gy", "label": "gy", "shape": "dot"}, {"color": "#97c2fc", "id": "ge", "label": "ge", "shape": "dot"}, {"color": "#97c2fc", "id": "gu", "label": "gu", "shape": "dot"}, {"color": "#97c2fc", "id": "hi", "label": "hi", "shape": "dot"}, {"color": "#97c2fc", "id": "he", "label": "he", "shape": "dot"}, {"color": "#97c2fc", "id": "hs", "label": "hs", "shape": "dot"}, {"color": "#97c2fc", "id": "hy", "label": "hy", "shape": "dot"}, {"color": "#97c2fc", "id": "id", "label": "id", "shape": "dot"}, {"color": "#97c2fc", "id": "ia", "label": "ia", "shape": "dot"}, {"color": "#97c2fc", "id": "in", "label": "in", "shape": "dot"}, {"color": "#97c2fc", "id": "iq", "label": "iq", "shape": "dot"}, {"color": "#97c2fc", "id": "il", "label": "il", "shape": "dot"}, {"color": "#97c2fc", "id": "iy", "label": "iy", "shape": "dot"}, {"color": "#97c2fc", "id": "ja", "label": "ja", "shape": "dot"}, {"color": "#97c2fc", "id": "jn", "label": "jn", "shape": "dot"}, {"color": "#97c2fc", "id": "kn", "label": "kn", "shape": "dot"}, {"color": "#97c2fc", "id": "ka", "label": "ka", "shape": "dot"}, {"color": "#97c2fc", "id": "ki", "label": "ki", "shape": "dot"}, {"color": "#97c2fc", "id": "kt", "label": "kt", "shape": "dot"}, {"color": "#97c2fc", "id": "ls", "label": "ls", "shape": "dot"}, {"color": "#97c2fc", "id": "la", "label": "la", "shape": "dot"}, {"color": "#97c2fc", "id": "ln", "label": "ln", "shape": "dot"}, {"color": "#97c2fc", "id": "lo", "label": "lo", "shape": "dot"}, {"color": "#97c2fc", "id": "lg", "label": "lg", "shape": "dot"}, {"color": "#97c2fc", "id": "mr", "label": "mr", "shape": "dot"}, {"color": "#97c2fc", "id": "mi", "label": "mi", "shape": "dot"}, {"color": "#97c2fc", "id": "ma", "label": "ma", "shape": "dot"}, {"color": "#97c2fc", "id": "ms", "label": "ms", "shape": "dot"}, {"color": "#97c2fc", "id": "mo", "label": "mo", "shape": "dot"}, {"color": "#97c2fc", "id": "me", "label": "me", "shape": "dot"}, {"color": "#97c2fc", "id": "na", "label": "na", "shape": "dot"}, {"color": "#97c2fc", "id": "nu", "label": "nu", "shape": "dot"}, {"color": "#97c2fc", "id": "nl", "label": "nl", "shape": "dot"}, {"color": "#97c2fc", "id": "ns", "label": "ns", "shape": "dot"}, {"color": "#97c2fc", "id": "nd", "label": "nd", "shape": "dot"}, {"color": "#97c2fc", "id": "nr", "label": "nr", "shape": "dot"}, {"color": "#97c2fc", "id": "ny", "label": "ny", "shape": "dot"}, {"color": "#97c2fc", "id": "on", "label": "on", "shape": "dot"}, {"color": "#97c2fc", "id": "pn", "label": "pn", "shape": "dot"}, {"color": "#97c2fc", "id": "pu", "label": "pu", "shape": "dot"}, {"color": "#97c2fc", "id": "pe", "label": "pe", "shape": "dot"}, {"color": "#97c2fc", "id": "pa", "label": "pa", "shape": "dot"}, {"color": "#97c2fc", "id": "py", "label": "py", "shape": "dot"}, {"color": "#97c2fc", "id": "ps", "label": "ps", "shape": "dot"}, {"color": "#97c2fc", "id": "pd", "label": "pd", "shape": "dot"}, {"color": "#97c2fc", "id": "pl", "label": "pl", "shape": "dot"}, {"color": "#97c2fc", "id": "qr", "label": "qr", "shape": "dot"}, {"color": "#97c2fc", "id": "ra", "label": "ra", "shape": "dot"}, {"color": "#97c2fc", "id": "ss", "label": "ss", "shape": "dot"}, {"color": "#97c2fc", "id": "sa", "label": "sa", "shape": "dot"}, {"color": "#97c2fc", "id": "so", "label": "so", "shape": "dot"}, {"color": "#97c2fc", "id": "se", "label": "se", "shape": "dot"}, {"color": "#97c2fc", "id": "sl", "label": "sl", "shape": "dot"}, {"color": "#97c2fc", "id": "sn", "label": "sn", "shape": "dot"}, {"color": "#97c2fc", "id": "sd", "label": "sd", "shape": "dot"}, {"color": "#97c2fc", "id": "tn", "label": "tn", "shape": "dot"}, {"color": "#97c2fc", "id": "ta", "label": "ta", "shape": "dot"}, {"color": "#97c2fc", "id": "td", "label": "td", "shape": "dot"}, {"color": "#97c2fc", "id": "te", "label": "te", "shape": "dot"}, {"color": "#97c2fc", "id": "to", "label": "to", "shape": "dot"}, {"color": "#97c2fc", "id": "ty", "label": "ty", "shape": "dot"}, {"color": "#97c2fc", "id": "tu", "label": "tu", "shape": "dot"}, {"color": "#97c2fc", "id": "ua", "label": "ua", "shape": "dot"}, {"color": "#97c2fc", "id": "ue", "label": "ue", "shape": "dot"}, {"color": "#97c2fc", "id": "us", "label": "us", "shape": "dot"}, {"color": "#97c2fc", "id": "um", "label": "um", "shape": "dot"}, {"color": "#97c2fc", "id": "uy", "label": "uy", "shape": "dot"}, {"color": "#97c2fc", "id": "un", "label": "un", "shape": "dot"}, {"color": "#97c2fc", "id": "vu", "label": "vu", "shape": "dot"}, {"color": "#97c2fc", "id": "va", "label": "va", "shape": "dot"}, {"color": "#97c2fc", "id": "vm", "label": "vm", "shape": "dot"}, {"color": "#97c2fc", "id": "yn", "label": "yn", "shape": "dot"}, {"color": "#97c2fc", "id": "za", "label": "za", "shape": "dot"}, {"color": "#97c2fc", "id": "ze", "label": "ze", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "an", "to": "na"}, {"arrows": "to", "from": "an", "to": "nu"}, {"arrows": "to", "from": "an", "to": "nl"}, {"arrows": "to", "from": "an", "to": "ns"}, {"arrows": "to", "from": "an", "to": "nd"}, {"arrows": "to", "from": "an", "to": "nr"}, {"arrows": "to", "from": "an", "to": "ny"}, {"arrows": "to", "from": "aa", "to": "an"}, {"arrows": "to", "from": "aa", "to": "aa"}, {"arrows": "to", "from": "bs", "to": "ss"}, {"arrows": "to", "from": "bs", "to": "sa"}, {"arrows": "to", "from": "bs", "to": "so"}, {"arrows": "to", "from": "bs", "to": "se"}, {"arrows": "to", "from": "bs", "to": "sl"}, {"arrows": "to", "from": "bs", "to": "sn"}, {"arrows": "to", "from": "bs", "to": "sd"}, {"arrows": "to", "from": "bn", "to": "na"}, {"arrows": "to", "from": "bn", "to": "nu"}, {"arrows": "to", "from": "bn", "to": "nl"}, {"arrows": "to", "from": "bn", "to": "ns"}, {"arrows": "to", "from": "bn", "to": "nd"}, {"arrows": "to", "from": "bn", "to": "nr"}, {"arrows": "to", "from": "bn", "to": "ny"}, {"arrows": "to", "from": "bh", "to": "hi"}, {"arrows": "to", "from": "bh", "to": "he"}, {"arrows": "to", "from": "bh", "to": "hs"}, {"arrows": "to", "from": "bh", "to": "hy"}, {"arrows": "to", "from": "bm", "to": "mr"}, {"arrows": "to", "from": "bm", "to": "mi"}, {"arrows": "to", "from": "bm", "to": "ma"}, {"arrows": "to", "from": "bm", "to": "ms"}, {"arrows": "to", "from": "bm", "to": "mo"}, {"arrows": "to", "from": "bm", "to": "me"}, {"arrows": "to", "from": "be", "to": "er"}, {"arrows": "to", "from": "be", "to": "et"}, {"arrows": "to", "from": "be", "to": "ea"}, {"arrows": "to", "from": "be", "to": "ei"}, {"arrows": "to", "from": "ba", "to": "an"}, {"arrows": "to", "from": "ba", "to": "aa"}, {"arrows": "to", "from": "bl", "to": "ls"}, {"arrows": "to", "from": "bl", "to": "la"}, {"arrows": "to", "from": "bl", "to": "ln"}, {"arrows": "to", "from": "bl", "to": "lo"}, {"arrows": "to", "from": "bl", "to": "lg"}, {"arrows": "to", "from": "bi", "to": "id"}, {"arrows": "to", "from": "bi", "to": "ia"}, {"arrows": "to", "from": "bi", "to": "in"}, {"arrows": "to", "from": "bi", "to": "iq"}, {"arrows": "to", "from": "bi", "to": "il"}, {"arrows": "to", "from": "bi", "to": "iy"}, {"arrows": "to", "from": "bo", "to": "on"}, {"arrows": "to", "from": "ce", "to": "er"}, {"arrows": "to", "from": "ce", "to": "et"}, {"arrows": "to", "from": "ce", "to": "ea"}, {"arrows": "to", "from": "ce", "to": "ei"}, {"arrows": "to", "from": "ca", "to": "an"}, {"arrows": "to", "from": "ca", "to": "aa"}, {"arrows": "to", "from": "cn", "to": "na"}, {"arrows": "to", "from": "cn", "to": "nu"}, {"arrows": "to", "from": "cn", "to": "nl"}, {"arrows": "to", "from": "cn", "to": "ns"}, {"arrows": "to", "from": "cn", "to": "nd"}, {"arrows": "to", "from": "cn", "to": "nr"}, {"arrows": "to", "from": "cn", "to": "ny"}, {"arrows": "to", "from": "cc", "to": "ce"}, {"arrows": "to", "from": "cc", "to": "ca"}, {"arrows": "to", "from": "cc", "to": "cn"}, {"arrows": "to", "from": "cc", "to": "cc"}, {"arrows": "to", "from": "cc", "to": "cd"}, {"arrows": "to", "from": "cc", "to": "cs"}, {"arrows": "to", "from": "cc", "to": "co"}, {"arrows": "to", "from": "cd", "to": "do"}, {"arrows": "to", "from": "cd", "to": "dk"}, {"arrows": "to", "from": "cd", "to": "di"}, {"arrows": "to", "from": "cd", "to": "da"}, {"arrows": "to", "from": "cd", "to": "dc"}, {"arrows": "to", "from": "cs", "to": "ss"}, {"arrows": "to", "from": "cs", "to": "sa"}, {"arrows": "to", "from": "cs", "to": "so"}, {"arrows": "to", "from": "cs", "to": "se"}, {"arrows": "to", "from": "cs", "to": "sl"}, {"arrows": "to", "from": "cs", "to": "sn"}, {"arrows": "to", "from": "cs", "to": "sd"}, {"arrows": "to", "from": "co", "to": "on"}, {"arrows": "to", "from": "do", "to": "on"}, {"arrows": "to", "from": "dk", "to": "kn"}, {"arrows": "to", "from": "dk", "to": "ka"}, {"arrows": "to", "from": "dk", "to": "ki"}, {"arrows": "to", "from": "dk", "to": "kt"}, {"arrows": "to", "from": "di", "to": "id"}, {"arrows": "to", "from": "di", "to": "ia"}, {"arrows": "to", "from": "di", "to": "in"}, {"arrows": "to", "from": "di", "to": "iq"}, {"arrows": "to", "from": "di", "to": "il"}, {"arrows": "to", "from": "di", "to": "iy"}, {"arrows": "to", "from": "da", "to": "an"}, {"arrows": "to", "from": "da", "to": "aa"}, {"arrows": "to", "from": "dc", "to": "ce"}, {"arrows": "to", "from": "dc", "to": "ca"}, {"arrows": "to", "from": "dc", "to": "cn"}, {"arrows": "to", "from": "dc", "to": "cc"}, {"arrows": "to", "from": "dc", "to": "cd"}, {"arrows": "to", "from": "dc", "to": "cs"}, {"arrows": "to", "from": "dc", "to": "co"}, {"arrows": "to", "from": "er", "to": "ra"}, {"arrows": "to", "from": "et", "to": "tn"}, {"arrows": "to", "from": "et", "to": "ta"}, {"arrows": "to", "from": "et", "to": "td"}, {"arrows": "to", "from": "et", "to": "te"}, {"arrows": "to", "from": "et", "to": "to"}, {"arrows": "to", "from": "et", "to": "ty"}, {"arrows": "to", "from": "et", "to": "tu"}, {"arrows": "to", "from": "ea", "to": "an"}, {"arrows": "to", "from": "ea", "to": "aa"}, {"arrows": "to", "from": "ei", "to": "id"}, {"arrows": "to", "from": "ei", "to": "ia"}, {"arrows": "to", "from": "ei", "to": "in"}, {"arrows": "to", "from": "ei", "to": "iq"}, {"arrows": "to", "from": "ei", "to": "il"}, {"arrows": "to", "from": "ei", "to": "iy"}, {"arrows": "to", "from": "fi", "to": "id"}, {"arrows": "to", "from": "fi", "to": "ia"}, {"arrows": "to", "from": "fi", "to": "in"}, {"arrows": "to", "from": "fi", "to": "iq"}, {"arrows": "to", "from": "fi", "to": "il"}, {"arrows": "to", "from": "fi", "to": "iy"}, {"arrows": "to", "from": "fd", "to": "do"}, {"arrows": "to", "from": "fd", "to": "dk"}, {"arrows": "to", "from": "fd", "to": "di"}, {"arrows": "to", "from": "fd", "to": "da"}, {"arrows": "to", "from": "fd", "to": "dc"}, {"arrows": "to", "from": "fe", "to": "er"}, {"arrows": "to", "from": "fe", "to": "et"}, {"arrows": "to", "from": "fe", "to": "ea"}, {"arrows": "to", "from": "fe", "to": "ei"}, {"arrows": "to", "from": "gn", "to": "na"}, {"arrows": "to", "from": "gn", "to": "nu"}, {"arrows": "to", "from": "gn", "to": "nl"}, {"arrows": "to", "from": "gn", "to": "ns"}, {"arrows": "to", "from": "gn", "to": "nd"}, {"arrows": "to", "from": "gn", "to": "nr"}, {"arrows": "to", "from": "gn", "to": "ny"}, {"arrows": "to", "from": "ga", "to": "an"}, {"arrows": "to", "from": "ga", "to": "aa"}, {"arrows": "to", "from": "gy", "to": "yn"}, {"arrows": "to", "from": "ge", "to": "er"}, {"arrows": "to", "from": "ge", "to": "et"}, {"arrows": "to", "from": "ge", "to": "ea"}, {"arrows": "to", "from": "ge", "to": "ei"}, {"arrows": "to", "from": "gu", "to": "ua"}, {"arrows": "to", "from": "gu", "to": "ue"}, {"arrows": "to", "from": "gu", "to": "us"}, {"arrows": "to", "from": "gu", "to": "um"}, {"arrows": "to", "from": "gu", "to": "uy"}, {"arrows": "to", "from": "gu", "to": "un"}, {"arrows": "to", "from": "hi", "to": "id"}, {"arrows": "to", "from": "hi", "to": "ia"}, {"arrows": "to", "from": "hi", "to": "in"}, {"arrows": "to", "from": "hi", "to": "iq"}, {"arrows": "to", "from": "hi", "to": "il"}, {"arrows": "to", "from": "hi", "to": "iy"}, {"arrows": "to", "from": "he", "to": "er"}, {"arrows": "to", "from": "he", "to": "et"}, {"arrows": "to", "from": "he", "to": "ea"}, {"arrows": "to", "from": "he", "to": "ei"}, {"arrows": "to", "from": "hs", "to": "ss"}, {"arrows": "to", "from": "hs", "to": "sa"}, {"arrows": "to", "from": "hs", "to": "so"}, {"arrows": "to", "from": "hs", "to": "se"}, {"arrows": "to", "from": "hs", "to": "sl"}, {"arrows": "to", "from": "hs", "to": "sn"}, {"arrows": "to", "from": "hs", "to": "sd"}, {"arrows": "to", "from": "hy", "to": "yn"}, {"arrows": "to", "from": "id", "to": "do"}, {"arrows": "to", "from": "id", "to": "dk"}, {"arrows": "to", "from": "id", "to": "di"}, {"arrows": "to", "from": "id", "to": "da"}, {"arrows": "to", "from": "id", "to": "dc"}, {"arrows": "to", "from": "ia", "to": "an"}, {"arrows": "to", "from": "ia", "to": "aa"}, {"arrows": "to", "from": "in", "to": "na"}, {"arrows": "to", "from": "in", "to": "nu"}, {"arrows": "to", "from": "in", "to": "nl"}, {"arrows": "to", "from": "in", "to": "ns"}, {"arrows": "to", "from": "in", "to": "nd"}, {"arrows": "to", "from": "in", "to": "nr"}, {"arrows": "to", "from": "in", "to": "ny"}, {"arrows": "to", "from": "iq", "to": "qr"}, {"arrows": "to", "from": "il", "to": "ls"}, {"arrows": "to", "from": "il", "to": "la"}, {"arrows": "to", "from": "il", "to": "ln"}, {"arrows": "to", "from": "il", "to": "lo"}, {"arrows": "to", "from": "il", "to": "lg"}, {"arrows": "to", "from": "iy", "to": "yn"}, {"arrows": "to", "from": "ja", "to": "an"}, {"arrows": "to", "from": "ja", "to": "aa"}, {"arrows": "to", "from": "jn", "to": "na"}, {"arrows": "to", "from": "jn", "to": "nu"}, {"arrows": "to", "from": "jn", "to": "nl"}, {"arrows": "to", "from": "jn", "to": "ns"}, {"arrows": "to", "from": "jn", "to": "nd"}, {"arrows": "to", "from": "jn", "to": "nr"}, {"arrows": "to", "from": "jn", "to": "ny"}, {"arrows": "to", "from": "kn", "to": "na"}, {"arrows": "to", "from": "kn", "to": "nu"}, {"arrows": "to", "from": "kn", "to": "nl"}, {"arrows": "to", "from": "kn", "to": "ns"}, {"arrows": "to", "from": "kn", "to": "nd"}, {"arrows": "to", "from": "kn", "to": "nr"}, {"arrows": "to", "from": "kn", "to": "ny"}, {"arrows": "to", "from": "ka", "to": "an"}, {"arrows": "to", "from": "ka", "to": "aa"}, {"arrows": "to", "from": "ki", "to": "id"}, {"arrows": "to", "from": "ki", "to": "ia"}, {"arrows": "to", "from": "ki", "to": "in"}, {"arrows": "to", "from": "ki", "to": "iq"}, {"arrows": "to", "from": "ki", "to": "il"}, {"arrows": "to", "from": "ki", "to": "iy"}, {"arrows": "to", "from": "kt", "to": "tn"}, {"arrows": "to", "from": "kt", "to": "ta"}, {"arrows": "to", "from": "kt", "to": "td"}, {"arrows": "to", "from": "kt", "to": "te"}, {"arrows": "to", "from": "kt", "to": "to"}, {"arrows": "to", "from": "kt", "to": "ty"}, {"arrows": "to", "from": "kt", "to": "tu"}, {"arrows": "to", "from": "ls", "to": "ss"}, {"arrows": "to", "from": "ls", "to": "sa"}, {"arrows": "to", "from": "ls", "to": "so"}, {"arrows": "to", "from": "ls", "to": "se"}, {"arrows": "to", "from": "ls", "to": "sl"}, {"arrows": "to", "from": "ls", "to": "sn"}, {"arrows": "to", "from": "ls", "to": "sd"}, {"arrows": "to", "from": "la", "to": "an"}, {"arrows": "to", "from": "la", "to": "aa"}, {"arrows": "to", "from": "ln", "to": "na"}, {"arrows": "to", "from": "ln", "to": "nu"}, {"arrows": "to", "from": "ln", "to": "nl"}, {"arrows": "to", "from": "ln", "to": "ns"}, {"arrows": "to", "from": "ln", "to": "nd"}, {"arrows": "to", "from": "ln", "to": "nr"}, {"arrows": "to", "from": "ln", "to": "ny"}, {"arrows": "to", "from": "lo", "to": "on"}, {"arrows": "to", "from": "lg", "to": "gn"}, {"arrows": "to", "from": "lg", "to": "ga"}, {"arrows": "to", "from": "lg", "to": "gy"}, {"arrows": "to", "from": "lg", "to": "ge"}, {"arrows": "to", "from": "lg", "to": "gu"}, {"arrows": "to", "from": "mr", "to": "ra"}, {"arrows": "to", "from": "mi", "to": "id"}, {"arrows": "to", "from": "mi", "to": "ia"}, {"arrows": "to", "from": "mi", "to": "in"}, {"arrows": "to", "from": "mi", "to": "iq"}, {"arrows": "to", "from": "mi", "to": "il"}, {"arrows": "to", "from": "mi", "to": "iy"}, {"arrows": "to", "from": "ma", "to": "an"}, {"arrows": "to", "from": "ma", "to": "aa"}, {"arrows": "to", "from": "ms", "to": "ss"}, {"arrows": "to", "from": "ms", "to": "sa"}, {"arrows": "to", "from": "ms", "to": "so"}, {"arrows": "to", "from": "ms", "to": "se"}, {"arrows": "to", "from": "ms", "to": "sl"}, {"arrows": "to", "from": "ms", "to": "sn"}, {"arrows": "to", "from": "ms", "to": "sd"}, {"arrows": "to", "from": "mo", "to": "on"}, {"arrows": "to", "from": "me", "to": "er"}, {"arrows": "to", "from": "me", "to": "et"}, {"arrows": "to", "from": "me", "to": "ea"}, {"arrows": "to", "from": "me", "to": "ei"}, {"arrows": "to", "from": "na", "to": "an"}, {"arrows": "to", "from": "na", "to": "aa"}, {"arrows": "to", "from": "nu", "to": "ua"}, {"arrows": "to", "from": "nu", "to": "ue"}, {"arrows": "to", "from": "nu", "to": "us"}, {"arrows": "to", "from": "nu", "to": "um"}, {"arrows": "to", "from": "nu", "to": "uy"}, {"arrows": "to", "from": "nu", "to": "un"}, {"arrows": "to", "from": "nl", "to": "ls"}, {"arrows": "to", "from": "nl", "to": "la"}, {"arrows": "to", "from": "nl", "to": "ln"}, {"arrows": "to", "from": "nl", "to": "lo"}, {"arrows": "to", "from": "nl", "to": "lg"}, {"arrows": "to", "from": "ns", "to": "ss"}, {"arrows": "to", "from": "ns", "to": "sa"}, {"arrows": "to", "from": "ns", "to": "so"}, {"arrows": "to", "from": "ns", "to": "se"}, {"arrows": "to", "from": "ns", "to": "sl"}, {"arrows": "to", "from": "ns", "to": "sn"}, {"arrows": "to", "from": "ns", "to": "sd"}, {"arrows": "to", "from": "nd", "to": "do"}, {"arrows": "to", "from": "nd", "to": "dk"}, {"arrows": "to", "from": "nd", "to": "di"}, {"arrows": "to", "from": "nd", "to": "da"}, {"arrows": "to", "from": "nd", "to": "dc"}, {"arrows": "to", "from": "nr", "to": "ra"}, {"arrows": "to", "from": "ny", "to": "yn"}, {"arrows": "to", "from": "on", "to": "na"}, {"arrows": "to", "from": "on", "to": "nu"}, {"arrows": "to", "from": "on", "to": "nl"}, {"arrows": "to", "from": "on", "to": "ns"}, {"arrows": "to", "from": "on", "to": "nd"}, {"arrows": "to", "from": "on", "to": "nr"}, {"arrows": "to", "from": "on", "to": "ny"}, {"arrows": "to", "from": "pn", "to": "na"}, {"arrows": "to", "from": "pn", "to": "nu"}, {"arrows": "to", "from": "pn", "to": "nl"}, {"arrows": "to", "from": "pn", "to": "ns"}, {"arrows": "to", "from": "pn", "to": "nd"}, {"arrows": "to", "from": "pn", "to": "nr"}, {"arrows": "to", "from": "pn", "to": "ny"}, {"arrows": "to", "from": "pu", "to": "ua"}, {"arrows": "to", "from": "pu", "to": "ue"}, {"arrows": "to", "from": "pu", "to": "us"}, {"arrows": "to", "from": "pu", "to": "um"}, {"arrows": "to", "from": "pu", "to": "uy"}, {"arrows": "to", "from": "pu", "to": "un"}, {"arrows": "to", "from": "pe", "to": "er"}, {"arrows": "to", "from": "pe", "to": "et"}, {"arrows": "to", "from": "pe", "to": "ea"}, {"arrows": "to", "from": "pe", "to": "ei"}, {"arrows": "to", "from": "pa", "to": "an"}, {"arrows": "to", "from": "pa", "to": "aa"}, {"arrows": "to", "from": "py", "to": "yn"}, {"arrows": "to", "from": "ps", "to": "ss"}, {"arrows": "to", "from": "ps", "to": "sa"}, {"arrows": "to", "from": "ps", "to": "so"}, {"arrows": "to", "from": "ps", "to": "se"}, {"arrows": "to", "from": "ps", "to": "sl"}, {"arrows": "to", "from": "ps", "to": "sn"}, {"arrows": "to", "from": "ps", "to": "sd"}, {"arrows": "to", "from": "pd", "to": "do"}, {"arrows": "to", "from": "pd", "to": "dk"}, {"arrows": "to", "from": "pd", "to": "di"}, {"arrows": "to", "from": "pd", "to": "da"}, {"arrows": "to", "from": "pd", "to": "dc"}, {"arrows": "to", "from": "pl", "to": "ls"}, {"arrows": "to", "from": "pl", "to": "la"}, {"arrows": "to", "from": "pl", "to": "ln"}, {"arrows": "to", "from": "pl", "to": "lo"}, {"arrows": "to", "from": "pl", "to": "lg"}, {"arrows": "to", "from": "qr", "to": "ra"}, {"arrows": "to", "from": "ra", "to": "an"}, {"arrows": "to", "from": "ra", "to": "aa"}, {"arrows": "to", "from": "ss", "to": "ss"}, {"arrows": "to", "from": "ss", "to": "sa"}, {"arrows": "to", "from": "ss", "to": "so"}, {"arrows": "to", "from": "ss", "to": "se"}, {"arrows": "to", "from": "ss", "to": "sl"}, {"arrows": "to", "from": "ss", "to": "sn"}, {"arrows": "to", "from": "ss", "to": "sd"}, {"arrows": "to", "from": "sa", "to": "an"}, {"arrows": "to", "from": "sa", "to": "aa"}, {"arrows": "to", "from": "so", "to": "on"}, {"arrows": "to", "from": "se", "to": "er"}, {"arrows": "to", "from": "se", "to": "et"}, {"arrows": "to", "from": "se", "to": "ea"}, {"arrows": "to", "from": "se", "to": "ei"}, {"arrows": "to", "from": "sl", "to": "ls"}, {"arrows": "to", "from": "sl", "to": "la"}, {"arrows": "to", "from": "sl", "to": "ln"}, {"arrows": "to", "from": "sl", "to": "lo"}, {"arrows": "to", "from": "sl", "to": "lg"}, {"arrows": "to", "from": "sn", "to": "na"}, {"arrows": "to", "from": "sn", "to": "nu"}, {"arrows": "to", "from": "sn", "to": "nl"}, {"arrows": "to", "from": "sn", "to": "ns"}, {"arrows": "to", "from": "sn", "to": "nd"}, {"arrows": "to", "from": "sn", "to": "nr"}, {"arrows": "to", "from": "sn", "to": "ny"}, {"arrows": "to", "from": "sd", "to": "do"}, {"arrows": "to", "from": "sd", "to": "dk"}, {"arrows": "to", "from": "sd", "to": "di"}, {"arrows": "to", "from": "sd", "to": "da"}, {"arrows": "to", "from": "sd", "to": "dc"}, {"arrows": "to", "from": "tn", "to": "na"}, {"arrows": "to", "from": "tn", "to": "nu"}, {"arrows": "to", "from": "tn", "to": "nl"}, {"arrows": "to", "from": "tn", "to": "ns"}, {"arrows": "to", "from": "tn", "to": "nd"}, {"arrows": "to", "from": "tn", "to": "nr"}, {"arrows": "to", "from": "tn", "to": "ny"}, {"arrows": "to", "from": "ta", "to": "an"}, {"arrows": "to", "from": "ta", "to": "aa"}, {"arrows": "to", "from": "td", "to": "do"}, {"arrows": "to", "from": "td", "to": "dk"}, {"arrows": "to", "from": "td", "to": "di"}, {"arrows": "to", "from": "td", "to": "da"}, {"arrows": "to", "from": "td", "to": "dc"}, {"arrows": "to", "from": "te", "to": "er"}, {"arrows": "to", "from": "te", "to": "et"}, {"arrows": "to", "from": "te", "to": "ea"}, {"arrows": "to", "from": "te", "to": "ei"}, {"arrows": "to", "from": "to", "to": "on"}, {"arrows": "to", "from": "ty", "to": "yn"}, {"arrows": "to", "from": "tu", "to": "ua"}, {"arrows": "to", "from": "tu", "to": "ue"}, {"arrows": "to", "from": "tu", "to": "us"}, {"arrows": "to", "from": "tu", "to": "um"}, {"arrows": "to", "from": "tu", "to": "uy"}, {"arrows": "to", "from": "tu", "to": "un"}, {"arrows": "to", "from": "ua", "to": "an"}, {"arrows": "to", "from": "ua", "to": "aa"}, {"arrows": "to", "from": "ue", "to": "er"}, {"arrows": "to", "from": "ue", "to": "et"}, {"arrows": "to", "from": "ue", "to": "ea"}, {"arrows": "to", "from": "ue", "to": "ei"}, {"arrows": "to", "from": "us", "to": "ss"}, {"arrows": "to", "from": "us", "to": "sa"}, {"arrows": "to", "from": "us", "to": "so"}, {"arrows": "to", "from": "us", "to": "se"}, {"arrows": "to", "from": "us", "to": "sl"}, {"arrows": "to", "from": "us", "to": "sn"}, {"arrows": "to", "from": "us", "to": "sd"}, {"arrows": "to", "from": "um", "to": "mr"}, {"arrows": "to", "from": "um", "to": "mi"}, {"arrows": "to", "from": "um", "to": "ma"}, {"arrows": "to", "from": "um", "to": "ms"}, {"arrows": "to", "from": "um", "to": "mo"}, {"arrows": "to", "from": "um", "to": "me"}, {"arrows": "to", "from": "uy", "to": "yn"}, {"arrows": "to", "from": "un", "to": "na"}, {"arrows": "to", "from": "un", "to": "nu"}, {"arrows": "to", "from": "un", "to": "nl"}, {"arrows": "to", "from": "un", "to": "ns"}, {"arrows": "to", "from": "un", "to": "nd"}, {"arrows": "to", "from": "un", "to": "nr"}, {"arrows": "to", "from": "un", "to": "ny"}, {"arrows": "to", "from": "vu", "to": "ua"}, {"arrows": "to", "from": "vu", "to": "ue"}, {"arrows": "to", "from": "vu", "to": "us"}, {"arrows": "to", "from": "vu", "to": "um"}, {"arrows": "to", "from": "vu", "to": "uy"}, {"arrows": "to", "from": "vu", "to": "un"}, {"arrows": "to", "from": "va", "to": "an"}, {"arrows": "to", "from": "va", "to": "aa"}, {"arrows": "to", "from": "vm", "to": "mr"}, {"arrows": "to", "from": "vm", "to": "mi"}, {"arrows": "to", "from": "vm", "to": "ma"}, {"arrows": "to", "from": "vm", "to": "ms"}, {"arrows": "to", "from": "vm", "to": "mo"}, {"arrows": "to", "from": "vm", "to": "me"}, {"arrows": "to", "from": "yn", "to": "na"}, {"arrows": "to", "from": "yn", "to": "nu"}, {"arrows": "to", "from": "yn", "to": "nl"}, {"arrows": "to", "from": "yn", "to": "ns"}, {"arrows": "to", "from": "yn", "to": "nd"}, {"arrows": "to", "from": "yn", "to": "nr"}, {"arrows": "to", "from": "yn", "to": "ny"}, {"arrows": "to", "from": "za", "to": "an"}, {"arrows": "to", "from": "za", "to": "aa"}, {"arrows": "to", "from": "ze", "to": "er"}, {"arrows": "to", "from": "ze", "to": "et"}, {"arrows": "to", "from": "ze", "to": "ea"}, {"arrows": "to", "from": "ze", "to": "ei"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

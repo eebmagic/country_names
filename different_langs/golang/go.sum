@@ -1,0 +1,4 @@
+github.com/dogenzaka/tsv v0.0.0-20150215104501-8e02e611b1fb h1:+CCZUz1glhc18+Z/z06vNGsEv8Q1fUFDhC2QrXVCj5s=
+github.com/dogenzaka/tsv v0.0.0-20150215104501-8e02e611b1fb/go.mod h1:J3mq4adhcOHLw4cdjghQ2/SiLwoERsm6yYmlCJnnY3M=
+golang.org/x/text v0.16.0 h1:a94ExnEXNtEwYLGJSIUxnWoxoRz/ZcCsV63ROupILh4=
+golang.org/x/text v0.16.0/go.mod h1:GhwF1Be+LQoKShO3cGOHzqOgRrGaYc9AvblQOmPVHnI=
