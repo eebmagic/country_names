@@ -24,19 +24,10 @@ func nodeArrToString(nodes []*Node) string {
 /*
 Gets the possible steps from the tail of the path.
 If there are no steps, then will be an empty arr.
+Accounts for max possible visits based on node size.
 */
 func (p *Path) getNextSteps() []*Node {
-	// get children from graph for tail node
-	// filter children to only include where visits wouldn't
-	// result in the path exceeding the visit limit for the node 
-	fmt.Println("Getting next steps on path from curr: ", p.head.unit)
 	childNodes := p.graph.getChildren(p.tail)
-	// fmt.Println("Got childrenUnits", childNodes)
-	fmt.Println("Got childrenUnits", nodeArrToString(childNodes))
-
-	// for child := range childNodes {
-
-	// }
 
 	availableSteps := make([]*Node, 0)
 	for _, n := range childNodes {
@@ -44,8 +35,6 @@ func (p *Path) getNextSteps() []*Node {
 			availableSteps = append(availableSteps, n)
 		}
 	}
-	// fmt.Println("available child nodes: ", availableSteps)
-	fmt.Println("available child nodes:", nodeArrToString(availableSteps))
 
 	return availableSteps
 }
@@ -58,7 +47,6 @@ func (p *Path) init(n *Node) {
 }
 
 func (p *Path) visit(n *Node) {
-	fmt.Println("Visiting node: ", n.unit, "which has a size of", n.size)
 	p.tail = n
 	p.visitCounts[n.unit] += 1
 	p.steps = append(p.steps, n)
@@ -73,72 +61,67 @@ func (p *Path) toString() string {
 	return out
 }
 
+func (p *Path) expand() {
+	for {
+		children := p.getNextSteps()
+		if len(children) == 0 {
+			break
+		}
+		p.visit(children[0])
+	}
+}
+
 func BuildPath(n *Node, g *Graph) Path {
 	// counts := make(map[*Node]int)
 	// counts[n] = 1
 	counts := make(map[string]int)
 	counts[n.unit] = 1
 	steps := []*Node{n}
-	fmt.Println("Building steps array with node:", n)
 
 	return Path{n, n, counts, steps, g}
 }
 
 func Traverse(g *Graph) {
-	// counts := make(map[*Node]int)
-	// path := Path{nil, nil, counts, nil, g}
-	// fmt.Println("Built this init path:", path)
-	// fmt.Println("Path has this graph: ", path.graph.nodes)
-
-	// startKey := range(g.nodes).First()
-	// key, value := g.nodes.Map()
-	// fmt.Println("Graph has these nodes:", key, value)
-	fmt.Println("STARTING LOOP:\n");
-
 	var path Path
-	// for _, value := range g.nodes {
-	// 	path = BuildPath(&value, g)
-	// 	break
-	// }
-	startNode := g.nodes["aa"]
-	fmt.Println("Got starting node", &startNode)
-	// path = BuildPath(*g.nodes["aa"], g)
-	path = BuildPath(&startNode, g)
-	fmt.Println("Built this path:", path)
 
+	// Construct path from random node
+	for _, value := range g.nodes {
+		path = BuildPath(&value, g)
+		break
+	}
 
-	i := 0
-	// for i < 10 {
-	for {
-		children := path.getNextSteps()
-		if len(children) == 0 {
-			break
-		}
-		path.visit(children[0])
-		fmt.Println("Path after visit", path.toString())
-		fmt.Println("visit counts", path.visitCounts)
-		for key, value := range path.visitCounts {
-			fmt.Println("  ", key, value)
-		}
-		i++
+	// // Start with specific node
+	// // startNode := g.nodes["nr"]
+	// startNode := g.nodes["an"]
+	// fmt.Println("Got starting node", &startNode)
+	// path = BuildPath(&startNode, g)
+
+	path.expand()
+
+	for key, value := range path.visitCounts {
+		fmt.Println("  ", key, value, "/", g.nodes[key].size)
 	}
 	fmt.Println("Final path:", path.toString())
+
+
+	/*
+	Real logic should be this:
+	1. For each node build a path object.
+	2. || Expand paths out randomly
+	3. Sort nodes by path depth
+	4. Repeat steps 1..3 for N times
+	5. Once there are no updates to topo sort order (or stable cycle)
+		then stop.
+
+	Now we have a *rough* topological sort,
+	and can do a thorough cached-BFS traversal from bottom-up.
+
+
+	TODO:
+	- Cleanly get array from map keys/values?
+	- Cleanly sorting array?
+	*/
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
